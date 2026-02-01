@@ -1,0 +1,543 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Be My Valentine?</title>
+  <style>
+    :root{
+      --pink:#ff4d8d;
+      --hot:#ff2d55;
+      --red:#e11d48;
+      --soft:#fff0f6;
+      --white:#ffffff;
+      --shadow: 0 18px 50px rgba(225,29,72,.18);
+    }
+    *{ box-sizing:border-box; }
+    body{
+      margin:0;
+      min-height:100vh;
+      display:grid;
+      place-items:center;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      background:
+        radial-gradient(1200px 600px at 20% 15%, rgba(255,77,141,.25), transparent 60%),
+        radial-gradient(1000px 500px at 80% 20%, rgba(225,29,72,.18), transparent 55%),
+        radial-gradient(900px 500px at 50% 90%, rgba(255,45,85,.16), transparent 55%),
+        linear-gradient(180deg, #fff 0%, var(--soft) 100%);
+      color:#241018;
+      overflow:hidden;
+    }
+
+    .card{
+      width:min(920px, 92vw);
+      min-height:540px;
+      border-radius:28px;
+      background: rgba(255,255,255,.78);
+      backdrop-filter: blur(10px);
+      box-shadow: var(--shadow);
+      border: 1px solid rgba(255,77,141,.18);
+      padding: clamp(20px, 4vw, 44px);
+      position:relative;
+      overflow:hidden;
+    }
+
+    /* floating hearts background */
+    .hearts{
+      position:absolute; inset:0;
+      pointer-events:none;
+      opacity:.55;
+    }
+    .heart{
+      position:absolute;
+      width:14px; height:14px;
+      transform: rotate(45deg);
+      background: linear-gradient(135deg, var(--pink), var(--red));
+      border-radius:3px;
+      animation: floatUp linear infinite;
+      filter: drop-shadow(0 6px 10px rgba(225,29,72,.22));
+    }
+    .heart::before, .heart::after{
+      content:"";
+      position:absolute;
+      width:14px; height:14px;
+      background: inherit;
+      border-radius:50%;
+    }
+    .heart::before{ left:-7px; top:0; }
+    .heart::after{ top:-7px; left:0; }
+
+    @keyframes floatUp{
+      from{ transform: translateY(30px) rotate(45deg); opacity:0; }
+      10%{ opacity:1; }
+      to{ transform: translateY(-680px) rotate(45deg); opacity:0; }
+    }
+
+    .top{
+      display:flex;
+      gap:28px;
+      align-items:center;
+      justify-content:space-between;
+      flex-wrap:wrap;
+      position:relative;
+      z-index:2;
+    }
+
+    .badge{
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      padding:10px 14px;
+      border-radius:999px;
+      background: rgba(255,77,141,.12);
+      border:1px solid rgba(255,77,141,.22);
+      color: #a10f3a;
+      font-weight:650;
+      letter-spacing:.2px;
+      user-select:none;
+    }
+    .badge .dot{
+      width:10px; height:10px; border-radius:50%;
+      background: var(--hot);
+      box-shadow: 0 0 0 5px rgba(255,45,85,.15);
+    }
+
+    h1{
+      margin:18px 0 8px;
+      font-size: clamp(34px, 5vw, 54px);
+      line-height:1.05;
+      letter-spacing:-.6px;
+    }
+    .subtitle{
+      margin:0 0 24px;
+      font-size: clamp(15px, 2vw, 18px);
+      color: rgba(36,16,24,.75);
+      max-width: 54ch;
+    }
+
+    .stage{
+      margin-top: 14px;
+      display:grid;
+      grid-template-columns: 1.2fr 1fr;
+      gap: clamp(18px, 3vw, 34px);
+      align-items:stretch;
+      position:relative;
+      z-index:2;
+    }
+
+    @media (max-width: 820px){
+      .stage{ grid-template-columns: 1fr; }
+    }
+
+    .panel{
+      border-radius:24px;
+      padding: 22px;
+      background: rgba(255,255,255,.86);
+      border:1px solid rgba(225,29,72,.14);
+      box-shadow: 0 10px 24px rgba(225,29,72,.10);
+      position:relative;
+      overflow:hidden;
+    }
+
+    .ctaArea{
+      height: 240px;
+      position:relative;
+      border-radius:18px;
+      background: linear-gradient(180deg, rgba(255,77,141,.10), rgba(255,255,255,.0));
+      border:1px dashed rgba(225,29,72,.28);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
+
+    .btnRow{
+      position:relative;
+      width:100%;
+      height:100%;
+    }
+
+    button{
+      font: inherit;
+      border:0;
+      cursor:pointer;
+      user-select:none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .btn{
+      position:absolute;
+      padding: 14px 18px;
+      border-radius: 16px;
+      font-weight: 800;
+      letter-spacing:.2px;
+      transition: transform .12s ease, filter .12s ease, box-shadow .12s ease;
+      box-shadow: 0 10px 20px rgba(225,29,72,.18);
+    }
+    .btn:active{ transform: translateY(1px) scale(.99); }
+
+    .yes{
+      left: 22%;
+      top: 58%;
+      background: linear-gradient(135deg, var(--hot), var(--red));
+      color: var(--white);
+      min-width: 120px;
+    }
+    .yes:hover{ filter: brightness(1.05); }
+
+    .no{
+      left: 56%;
+      top: 58%;
+      background: rgba(255,255,255,.92);
+      color: #b0123f;
+      border: 1px solid rgba(225,29,72,.24);
+      min-width: 120px;
+      box-shadow: 0 10px 20px rgba(225,29,72,.10);
+    }
+
+    .hint{
+      margin-top:12px;
+      font-size: 13px;
+      color: rgba(36,16,24,.62);
+    }
+
+    .reveal{
+      display:grid;
+      gap:14px;
+      align-content:start;
+      min-height: 360px;
+    }
+
+    .hidden{ display:none !important; }
+
+    .resultTitle{
+      font-size: 22px;
+      font-weight: 900;
+      margin: 0;
+      color:#a10f3a;
+    }
+
+    .imgWrap{
+      width:100%;
+      aspect-ratio: 4 / 3;
+      border-radius: 18px;
+      overflow:hidden;
+      border: 1px solid rgba(225,29,72,.18);
+      box-shadow: 0 16px 36px rgba(225,29,72,.14);
+      background: #fff;
+      position:relative;
+    }
+    .imgWrap img{
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      display:block;
+      transform: scale(1.02);
+    }
+
+    .sparkle{
+      position:absolute;
+      inset: -40px;
+      background:
+        radial-gradient(circle at 25% 20%, rgba(255,255,255,.9), transparent 28%),
+        radial-gradient(circle at 70% 35%, rgba(255,255,255,.8), transparent 25%),
+        radial-gradient(circle at 40% 70%, rgba(255,255,255,.7), transparent 28%);
+      mix-blend-mode: soft-light;
+      opacity:.5;
+      animation: shimmer 2.5s ease-in-out infinite;
+      pointer-events:none;
+    }
+    @keyframes shimmer{
+      0%,100%{ transform: translateY(0); opacity:.45; }
+      50%{ transform: translateY(10px); opacity:.65; }
+    }
+
+    .confetti{
+      position:fixed;
+      inset:0;
+      pointer-events:none;
+      overflow:hidden;
+      z-index:999;
+    }
+    .piece{
+      position:absolute;
+      width:10px; height:14px;
+      border-radius:3px;
+      opacity:.95;
+      animation: fall 1.2s linear forwards;
+    }
+    @keyframes fall{
+      to{
+        transform: translateY(110vh) rotate(540deg);
+        opacity:1;
+      }
+    }
+
+    .footerNote{
+      margin: 0;
+      font-size: 12.5px;
+      color: rgba(36,16,24,.58);
+    }
+
+    a.smallLink{
+      color:#b0123f;
+      font-weight:700;
+      text-decoration:none;
+      border-bottom: 1px dashed rgba(176,18,63,.4);
+    }
+    a.smallLink:hover{ border-bottom-style:solid; }
+  </style>
+</head>
+
+<body>
+  <div class="card" id="card">
+    <div class="hearts" aria-hidden="true" id="hearts"></div>
+
+    <div class="top">
+      <div class="badge"><span class="dot"></span> Valentine Mode: ON</div>
+      <div class="badge" title="Tip">💗 Hover the “No”… if you dare</div>
+    </div>
+
+    <h1 id="question">Can you be my Valentine?</h1>
+    <p class="subtitle" id="subtitle">
+      There’s only one correct answer… and it’s adorable.
+    </p>
+
+    <div class="stage">
+      <div class="panel">
+        <div class="ctaArea" id="ctaArea">
+          <div class="btnRow" id="btnRow">
+            <button class="btn yes" id="yesBtn" type="button">Yes 💖</button>
+            <button class="btn no" id="noBtn" type="button" aria-label="No">No 🙈</button>
+          </div>
+        </div>
+        <p class="hint">Tip: On mobile, tapping “No” will make it jump away.</p>
+      </div>
+
+      <div class="panel reveal" id="revealPanel">
+        <p class="resultTitle hidden" id="resultTitle">YAY!! 💞</p>
+
+        <div class="imgWrap hidden" id="imgWrap">
+          <!-- Replace src with your own image if you want -->
+          <img
+            id="romanceImg"
+            alt="Romantic celebration"
+            src="https://images.unsplash.com/photo-1518199266791-5375a83190b7?auto=format&fit=crop&w=1200&q=80"
+          />
+          <div class="sparkle" aria-hidden="true"></div>
+        </div>
+
+        <p class="footerNote" id="footerNote">
+          Want a custom photo? Replace the image URL in the HTML (search for <b>romanceImg</b>).
+        </p>
+
+        <!-- Audio: uses a tiny built-in “pop” via WebAudio; you can also swap to an .mp3 -->
+        <audio id="celebrateAudio" preload="auto">
+          <!-- Optional: put your own file like: <source src="celebrate.mp3" type="audio/mpeg"> -->
+        </audio>
+
+        <p class="footerNote">
+          If sound doesn’t play at first, click “Yes” again (browsers require a user gesture).
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <div class="confetti" id="confetti" aria-hidden="true"></div>
+
+  <script>
+    // --- Floating hearts background ---
+    const hearts = document.getElementById('hearts');
+    const heartCount = 18;
+    for (let i = 0; i < heartCount; i++) {
+      const h = document.createElement('div');
+      h.className = 'heart';
+      const left = Math.random() * 100;
+      const delay = Math.random() * 6;
+      const duration = 5 + Math.random() * 5;
+      const size = 10 + Math.random() * 12;
+      h.style.left = left + '%';
+      h.style.bottom = (-20 - Math.random() * 200) + 'px';
+      h.style.animationDelay = delay + 's';
+      h.style.animationDuration = duration + 's';
+      h.style.width = size + 'px';
+      h.style.height = size + 'px';
+      h.style.opacity = 0.35 + Math.random() * 0.55;
+      hearts.appendChild(h);
+    }
+
+    // --- Evasive "No" button logic ---
+    const noBtn = document.getElementById('noBtn');
+    const yesBtn = document.getElementById('yesBtn');
+    const btnRow = document.getElementById('btnRow');
+    const ctaArea = document.getElementById('ctaArea');
+
+    function clamp(n, min, max){ return Math.max(min, Math.min(max, n)); }
+
+    function moveNoButton() {
+      // Keep within the cta area
+      const area = ctaArea.getBoundingClientRect();
+      const row = btnRow.getBoundingClientRect();
+      const noRect = noBtn.getBoundingClientRect();
+
+      const padding = 12;
+      const maxX = row.width - noRect.width - padding;
+      const maxY = row.height - noRect.height - padding;
+
+      // Random new position, avoid placing too close to the Yes button
+      const yesRect = yesBtn.getBoundingClientRect();
+      let x, y, tries = 0;
+
+      do {
+        x = padding + Math.random() * maxX;
+        y = padding + Math.random() * maxY;
+        tries++;
+        // Stop infinite loops
+        if (tries > 25) break;
+
+        const proposedNo = { left: x, top: y, right: x + noRect.width, bottom: y + noRect.height };
+        const proposedYes = {
+          left: yesRect.left - row.left,
+          top: yesRect.top - row.top,
+          right: (yesRect.left - row.left) + yesRect.width,
+          bottom: (yesRect.top - row.top) + yesRect.height
+        };
+
+        const overlap =
+          !(proposedNo.right < proposedYes.left ||
+            proposedNo.left > proposedYes.right ||
+            proposedNo.bottom < proposedYes.top ||
+            proposedNo.top > proposedYes.bottom);
+
+        if (!overlap) break;
+      } while (true);
+
+      noBtn.style.left = clamp(x, padding, maxX) + 'px';
+      noBtn.style.top = clamp(y, padding, maxY) + 'px';
+
+      // Tiny wiggle for extra playfulness
+      noBtn.style.transform = `translateY(-1px) rotate(${(Math.random()*6 - 3).toFixed(2)}deg)`;
+      setTimeout(() => (noBtn.style.transform = 'none'), 140);
+    }
+
+    // Hover (desktop) + focus/touch (mobile)
+    noBtn.addEventListener('mouseenter', moveNoButton);
+    noBtn.addEventListener('focus', moveNoButton);
+    noBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      moveNoButton();
+    });
+    // Also dodge if finger gets near (mobile-ish)
+    ctaArea.addEventListener('pointermove', (e) => {
+      const rect = noBtn.getBoundingClientRect();
+      const dx = e.clientX - (rect.left + rect.width/2);
+      const dy = e.clientY - (rect.top + rect.height/2);
+      const dist = Math.hypot(dx, dy);
+      if (dist < 80) moveNoButton();
+    });
+
+    // --- Yes => reveal + confetti + sound ---
+    const resultTitle = document.getElementById('resultTitle');
+    const imgWrap = document.getElementById('imgWrap');
+    const confetti = document.getElementById('confetti');
+
+    function makeConfetti() {
+      confetti.innerHTML = '';
+      const pieces = 120;
+      for (let i = 0; i < pieces; i++) {
+        const p = document.createElement('div');
+        p.className = 'piece';
+        // Randomize using CSS variables? We'll just set inline
+        const x = Math.random() * 100;
+        const delay = Math.random() * 0.25;
+        const dur = 0.9 + Math.random() * 0.9;
+        const w = 6 + Math.random() * 10;
+        const h = 10 + Math.random() * 14;
+
+        p.style.left = x + 'vw';
+        p.style.top = (-10 - Math.random() * 20) + 'px';
+        p.style.animationDuration = dur + 's';
+        p.style.animationDelay = delay + 's';
+        p.style.width = w + 'px';
+        p.style.height = h + 'px';
+
+        // Confetti colors: pink/red/white variations
+        const colors = ['#ff4d8d','#ff2d55','#e11d48','#ffffff','#ffd1e3','#ff8fb8'];
+        p.style.background = colors[Math.floor(Math.random() * colors.length)];
+        p.style.transform = `rotate(${Math.random()*360}deg)`;
+
+        confetti.appendChild(p);
+      }
+      // Clear after animation
+      setTimeout(() => (confetti.innerHTML = ''), 1800);
+    }
+
+    // Tiny celebratory sound with WebAudio (no file needed)
+    function playCelebrateSound() {
+      try {
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        const ctx = new AudioContext();
+
+        const now = ctx.currentTime;
+
+        // Two quick "sparkle pops"
+        function pop(t, freq) {
+          const o = ctx.createOscillator();
+          const g = ctx.createGain();
+          o.type = 'sine';
+          o.frequency.setValueAtTime(freq, t);
+          g.gain.setValueAtTime(0.0001, t);
+          g.gain.exponentialRampToValueAtTime(0.25, t + 0.01);
+          g.gain.exponentialRampToValueAtTime(0.0001, t + 0.18);
+          o.connect(g).connect(ctx.destination);
+          o.start(t);
+          o.stop(t + 0.2);
+        }
+
+        pop(now + 0.00, 880);
+        pop(now + 0.10, 1175);
+
+        // Little rising chime
+        const o2 = ctx.createOscillator();
+        const g2 = ctx.createGain();
+        o2.type = 'triangle';
+        o2.frequency.setValueAtTime(440, now + 0.02);
+        o2.frequency.exponentialRampToValueAtTime(1320, now + 0.45);
+        g2.gain.setValueAtTime(0.0001, now + 0.02);
+        g2.gain.exponentialRampToValueAtTime(0.18, now + 0.06);
+        g2.gain.exponentialRampToValueAtTime(0.0001, now + 0.55);
+        o2.connect(g2).connect(ctx.destination);
+        o2.start(now + 0.02);
+        o2.stop(now + 0.6);
+
+        // Auto-close
+        setTimeout(() => ctx.close(), 900);
+      } catch (err) {
+        // If WebAudio fails, just silently ignore
+      }
+    }
+
+    yesBtn.addEventListener('click', () => {
+      resultTitle.classList.remove('hidden');
+      imgWrap.classList.remove('hidden');
+      makeConfetti();
+      playCelebrateSound();
+
+      // Disable the no button for good measure 🙂
+      noBtn.disabled = true;
+      noBtn.style.opacity = 0.55;
+      noBtn.style.cursor = 'not-allowed';
+      noBtn.textContent = 'Too late 😘';
+    });
+
+    // Place No somewhere "reasonable" initially
+    // (after layout)
+    window.addEventListener('load', () => {
+      // Ensure it's not overlapping Yes on first render
+      moveNoButton();
+      // Move it back to a nicer start spot
+      noBtn.style.left = '56%';
+      noBtn.style.top = '58%';
+    });
+  </script>
+</body>
+</html>
