@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Be My Valentine?</title>
+
+  <style>
+    :root{
+      --pink:#ff4d8d;
+      --hot:#ff2d55;
+      --red:#e11d48;
+      --soft:#fff0f6;
+      --white:#ffffff;
+    }
+
+    *{ box-sizing:border-box; }
+
+    body{
+      margin:0;
+      min-height:100vh;
+      display:grid;
+      place-items:center;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      background:
+        radial-gradient(circle at top, rgba(255,77,141,.35), transparent 60%),
+        linear-gradient(180deg, #fff, var(--soft));
+      overflow:hidden;
+    }
+
+    h1{
+      font-size: clamp(36px, 6vw, 56px);
+      margin-bottom: 30px;
+      color:#8a0f32;
+      text-align:center;
+    }
+
+    .container{
+      position:relative;
+      width:100%;
+      max-width:600px;
+      height:260px;
+    }
+
+    button{
+      position:absolute;
+      padding: 14px 26px;
+      font-size: 20px;
+      font-weight: 700;
+      border-radius: 999px;
+      border:none;
+      cursor:pointer;
+      user-select:none;
+    }
+
+    .yes{
+      background: linear-gradient(135deg, var(--hot), var(--red));
+      color:white;
+      left:35%;
+      top:60%;
+      box-shadow:0 12px 24px rgba(225,29,72,.35);
+    }
+
+    .no{
+      background:white;
+      color:#b0123f;
+      border:2px solid rgba(225,29,72,.3);
+      left:55%;
+      top:60%;
+    }
+
+    .result{
+      margin-top:40px;
+      text-align:center;
+      display:none;
+      animation: fadeIn .6s ease forwards;
+    }
+
+    .result h2{
+      color:#a10f3a;
+      font-size:32px;
+      margin-bottom:20px;
+    }
+
+    .result img{
+      width:100%;
+      max-width:420px;
+      border-radius:20px;
+      box-shadow:0 20px 40px rgba(225,29,72,.25);
+    }
+
+    @keyframes fadeIn{
+      from{ opacity:0; transform:translateY(10px); }
+      to{ opacity:1; transform:translateY(0); }
+    }
+
+    .confetti{
+      position:fixed;
+      inset:0;
+      pointer-events:none;
+    }
+
+    .piece{
+      position:absolute;
+      width:10px;
+      height:14px;
+      background:var(--pink);
+      animation: fall 1.2s linear forwards;
+    }
+
+    @keyframes fall{
+      to{
+        transform:translateY(110vh) rotate(540deg);
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <h1 id="question">Can you be my Valentine? 💖</h1>
+
+  <div class="container" id="playArea">
+    <button class="yes" id="yesBtn">Yes 💘</button>
+    <button class="no" id="noBtn">No 🙈</button>
+  </div>
+
+  <div class="result" id="result">
+    <h2>YAY!! 💞</h2>
+    <img src="https://images.unsplash.com/photo-1518199266791-5375a83190b7?auto=format&fit=crop&w=1200&q=80" alt="Romantic image">
+  </div>
+
+  <div class="confetti" id="confetti"></div>
+
+<script>
+  const noBtn = document.getElementById('noBtn');
+  const playArea = document.getElementById('playArea');
+  const yesBtn = document.getElementById('yesBtn');
+  const result = document.getElementById('result');
+  const confetti = document.getElementById('confetti');
+
+  function moveNo(){
+    const area = playArea.getBoundingClientRect();
+    const btn = noBtn.getBoundingClientRect();
+
+    const x = Math.random() * (area.width - btn.width);
+    const y = Math.random() * (area.height - btn.height);
+
+    noBtn.style.left = x + 'px';
+    noBtn.style.top = y + 'px';
+  }
+
+  noBtn.addEventListener('mouseenter', moveNo);
+  noBtn.addEventListener('click', moveNo);
+
+  yesBtn.addEventListener('click', () => {
+    result.style.display = 'block';
+    noBtn.disabled = true;
+    noBtn.textContent = 'Too late 😘';
+    makeConfetti();
+    playSound();
+  });
+
+  function makeConfetti(){
+    confetti.innerHTML = '';
+    for(let i=0;i<120;i++){
+      const p = document.createElement('div');
+      p.className = 'piece';
+      p.style.left = Math.random()*100 + 'vw';
+      p.style.top = '-20px';
+      p.style.background = ['#ff4d8d','#ff2d55','#e11d48','#fff'][Math.floor(Math.random()*4)];
+      confetti.appendChild(p);
+    }
+    setTimeout(()=>confetti.innerHTML='',1500);
+  }
+
+  function playSound(){
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.frequency.value = 880;
+    osc.connect(gain).connect(ctx.destination);
+    gain.gain.setValueAtTime(0.001, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.2, ctx.currentTime+0.05);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime+0.4);
+    osc.start();
+    osc.stop(ctx.currentTime+0.4);
+  }
+</script>
+
+</body>
+</html>
